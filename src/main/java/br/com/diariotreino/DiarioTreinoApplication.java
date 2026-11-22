@@ -3,11 +3,9 @@ package br.com.diariotreino;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-/** Sem usuário em memória: a autenticação será feita pelo módulo autenticacao (JWT). */
+/** Sem usuário em memória do Spring: a autenticação é feita pelo JWT (core/auth). */
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
-@EnableJpaAuditing
 public class DiarioTreinoApplication {
 
     public static void main(String[] args) {

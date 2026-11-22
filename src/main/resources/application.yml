@@ -23,5 +23,9 @@ springdoc:
     path: /swagger-ui.html
 
 app:
+  jwt:
+    # Em produção use APP_JWT_SECRET (perfil prod recusa este valor).
+    secret: ${APP_JWT_SECRET:troque-este-segredo-em-producao-0123456789abcdef}
+    expiracao-minutos: ${APP_JWT_EXPIRACAO_MINUTOS:10080}
   cors:
     origens: http://localhost:8081,http://localhost:19006

@@ -8,5 +8,7 @@ spring:
       enabled: false
 
 app:
+  jwt:
+    secret: ${APP_JWT_SECRET}
   cors:
     origens: ${APP_CORS_ORIGENS:}
