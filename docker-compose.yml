@@ -1,0 +1,15 @@
+# Postgres local para testar o perfil prod: docker compose up -d
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: diariotreino
+      POSTGRES_USER: ${APP_DB_USUARIO:-diariotreino}
+      POSTGRES_PASSWORD: ${APP_DB_SENHA:-trocar-esta-senha}
+    ports:
+      - "5432:5432"
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data
+
+volumes:
+  dados-postgres:
