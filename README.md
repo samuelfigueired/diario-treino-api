@@ -38,3 +38,11 @@ mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 Arquitetura e convenções: [ARQUITETURA.md](ARQUITETURA.md) e [AGENTS.md](AGENTS.md).
+
+## Publicar no Render
+
+1. Crie a conta em https://render.com e conecte o GitHub.
+2. **New › Blueprint**, escolha o repositório `diario-treino-api` e confirme. O `render.yaml` cria a API (Docker) e o PostgreSQL, e gera o `APP_JWT_SECRET`.
+3. Quando terminar, a API fica em `https://diario-treino-api.onrender.com` (o nome exato aparece no painel). Teste `/api/saude`.
+
+Plano grátis: a API dorme após 15 minutos sem uso (o primeiro acesso leva cerca de 1 minuto) e o PostgreSQL grátis expira 30 dias após criado.

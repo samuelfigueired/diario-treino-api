@@ -1,14 +1,23 @@
 spring:
   datasource:
-    url: ${APP_DB_URL}
+    # APP_DB_URL completa, ou as partes (host, porta, nome) como o Render fornece.
+    url: ${APP_DB_URL:jdbc:postgresql://${APP_DB_HOST}:${APP_DB_PORTA:5432}/${APP_DB_NOME}}
     username: ${APP_DB_USUARIO}
     password: ${APP_DB_SENHA}
+    hikari:
+      maximum-pool-size: 5
+  jpa:
+    open-in-view: false
   h2:
     console:
       enabled: false
+
+springdoc:
+  swagger-ui:
+    enabled: true
 
 app:
   jwt:
     secret: ${APP_JWT_SECRET}
   cors:
-    origens: ${APP_CORS_ORIGENS:}
+    origens: ${APP_CORS_ORIGENS:http://localhost:8081}

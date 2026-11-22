@@ -1,0 +1,35 @@
+# Blueprint do Render: API (Docker) + PostgreSQL. No Render: New > Blueprint > escolha este repositório.
+services:
+  - type: web
+    name: diario-treino-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/saude
+    envVars:
+      - key: APP_DB_HOST
+        fromDatabase:
+          name: diario-treino-db
+          property: host
+      - key: APP_DB_PORTA
+        fromDatabase:
+          name: diario-treino-db
+          property: port
+      - key: APP_DB_NOME
+        fromDatabase:
+          name: diario-treino-db
+          property: database
+      - key: APP_DB_USUARIO
+        fromDatabase:
+          name: diario-treino-db
+          property: user
+      - key: APP_DB_SENHA
+        fromDatabase:
+          name: diario-treino-db
+          property: password
+      - key: APP_JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: diario-treino-db
+    plan: free
+    databaseName: diariotreino
