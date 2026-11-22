@@ -16,6 +16,7 @@ mvn spring-boot:run
 - Banco de desenvolvimento: H2 em arquivo na pasta `dados/` (os dados ficam salvos entre reinícios; apague a pasta para zerar)
 - Console do H2: http://localhost:8080/h2-console (JDBC URL `jdbc:h2:file:./dados/diariotreino;AUTO_SERVER=TRUE`, usuário `sa`)
 - Dados fictícios para demonstração: `set APP_DEMO=true` antes de subir (usuária `mariana.rocha@exemplo.com.br` / `treino2026`)
+- Preencher a sua conta (sem treinos ainda) com os mesmos dados: `set APP_DEMO_EMAIL=seu@email.com` antes de subir
 
 No Swagger, faça `POST /api/auth/login`, copie o `token` e cole em **Authorize** para testar as outras rotas.
 

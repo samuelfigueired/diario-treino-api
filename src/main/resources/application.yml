@@ -31,5 +31,7 @@ app:
   demo:
     # true cria a usuária de demonstração com treinos e histórico fictícios.
     ativo: ${APP_DEMO:false}
+    # E-mail de uma conta já criada para receber treinos A–D e 12 semanas de histórico de exemplo.
+    email: ${APP_DEMO_EMAIL:}
   cors:
     origens: http://localhost:8081,http://localhost:19006

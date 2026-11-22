@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,13 +36,15 @@ import java.util.stream.Collectors;
 
 /**
  * Usuária de demonstração com treinos A–D e 12 semanas de histórico, para testar o app sem cadastrar nada.
- * Desligada por padrão (os dados do app são reais); liga com APP_DEMO=true. Nunca roda no perfil prod.
- * Login: mariana.rocha@exemplo.com.br / treino2026.
+ * Desligada por padrão (os dados do app são reais). Nunca roda no perfil prod.
+ * <ul>
+ *   <li>APP_DEMO=true: cria a usuária mariana.rocha@exemplo.com.br / treino2026 com os dados.</li>
+ *   <li>APP_DEMO_EMAIL=email: preenche uma conta que já existe (e ainda não tem treinos) com os mesmos dados.</li>
+ * </ul>
  */
 @Slf4j
 @Component
 @Profile("!prod")
-@ConditionalOnProperty(name = "app.demo.ativo", havingValue = "true")
 @Order(2)
 @RequiredArgsConstructor
 public class DadosDemonstracao implements ApplicationRunner {
@@ -89,16 +91,40 @@ public class DadosDemonstracao implements ApplicationRunner {
     private final SessaoTreinoRepository sessaoRepository;
     private final PasswordEncoder encoder;
 
+    @Value("${app.demo.ativo:false}")
+    private boolean demoAtivo;
+
+    @Value("${app.demo.email:}")
+    private String emailParaPreencher;
+
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        if (usuarioRepository.existsByEmailIgnoreCase(EMAIL_DEMO)) return;
-        Usuario mariana = new Usuario();
-        mariana.setNome("Mariana Alves Rocha");
-        mariana.setEmail(EMAIL_DEMO);
-        mariana.setSenhaHash(encoder.encode(SENHA_DEMO));
-        Long usuarioId = usuarioRepository.save(mariana).getId();
+        if (demoAtivo && !usuarioRepository.existsByEmailIgnoreCase(EMAIL_DEMO)) {
+            Usuario mariana = new Usuario();
+            mariana.setNome("Mariana Alves Rocha");
+            mariana.setEmail(EMAIL_DEMO);
+            mariana.setSenhaHash(encoder.encode(SENHA_DEMO));
+            preencher(usuarioRepository.save(mariana).getId());
+        }
+        if (!emailParaPreencher.isBlank()) preencherContaExistente(emailParaPreencher.trim());
+    }
 
+    /** Só preenche conta sem treinos, para nunca misturar dados fictícios com registros reais. */
+    private void preencherContaExistente(String email) {
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email).orElse(null);
+        if (usuario == null) {
+            log.warn("APP_DEMO_EMAIL informado, mas a conta não existe. Crie a conta pelo app e reinicie a API.");
+            return;
+        }
+        if (!treinoRepository.findByUsuarioIdAndAtivoTrueOrderByLetraAsc(usuario.getId()).isEmpty()) {
+            log.info("Conta {} já tem treinos: dados de demonstração não aplicados", usuario.getId());
+            return;
+        }
+        preencher(usuario.getId());
+    }
+
+    private void preencher(Long usuarioId) {
         Map<String, Exercicio> catalogo = exercicioRepository.visiveis(usuarioId).stream()
                 .collect(Collectors.toMap(Exercicio::getNome, Function.identity()));
         for (Plano plano : PLANOS) {
