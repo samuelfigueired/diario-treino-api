@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,7 +25,7 @@ class TreinoApiTest extends ApiTestBase {
                 "diasDaSemana", List.of("SEG", "QUI"),
                 "duracaoEstimadaMin", 55,
                 "exercicios", List.of(
-                        Map.of("exercicioId", 1, "seriesPlanejadas", 4, "repeticoesPlanejadas", 10),
+                        Map.of("exercicioId", 1, "seriesPlanejadas", 4, "repeticoesPlanejadas", 10, "cargaPlanejadaKg", 47.5),
                         Map.of("exercicioId", 4, "seriesPlanejadas", 3, "repeticoesPlanejadas", 12)));
     }
 
@@ -64,6 +65,7 @@ class TreinoApiTest extends ApiTestBase {
         resultado.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.letra").value("A"))
                 .andExpect(jsonPath("$.exercicios[0].ordem").value(1))
+                .andExpect(jsonPath("$.exercicios[0].cargaPlanejadaKg").value(47.5))
                 .andExpect(jsonPath("$.exercicios[1].exercicio.nome").value("Tríceps na polia com corda"))
                 .andExpect(jsonPath("$.exercicios[0].ultimaCargaKg").value(org.hamcrest.Matchers.nullValue()));
     }
@@ -127,5 +129,26 @@ class TreinoApiTest extends ApiTestBase {
 
         // then
         resultado.andExpect(status().isBadRequest()).andExpect(jsonPath("$.detail").value("Exercício não encontrado: 99999"));
+    }
+
+    @Test
+    @DisplayName("A edição do treino troca nome, dias e exercícios, mantendo o mesmo id")
+    void deveAtualizarTreinoQuandoDadosForemValidos() throws Exception {
+        // given
+        String token = tokenNovoUsuario();
+        long id = criarTreino(token, "A");
+        var edicao = Map.of("letra", "A", "nome", "Peito e Ombros", "diasDaSemana", List.of("TER"),
+                "exercicios", List.of(Map.of("exercicioId", 16, "seriesPlanejadas", 4, "repeticoesPlanejadas", 8, "cargaPlanejadaKg", 18)));
+
+        // when
+        var resultado = mvc.perform(comCorpo(comToken(put("/api/treinos/" + id), token), edicao));
+
+        // then
+        resultado.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.nome").value("Peito e Ombros"))
+                .andExpect(jsonPath("$.diasDaSemana[0]").value("TER"))
+                .andExpect(jsonPath("$.exercicios.length()").value(1))
+                .andExpect(jsonPath("$.exercicios[0].exercicio.nome").value("Desenvolvimento com halteres"));
     }
 }

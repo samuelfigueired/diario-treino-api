@@ -1,7 +1,9 @@
 package br.com.diariotreino.core.execucao;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -126,5 +128,54 @@ class SessaoApiTest extends ApiTestBase {
         // then
         resultado.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("A série 1 foi enviada mais de uma vez."));
+    }
+
+    private long registrar(String token, long treinoId) throws Exception {
+        Instant fim = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        String resposta = mvc.perform(comCorpo(comToken(post("/api/sessoes"), token),
+                        sessao(treinoId, fim.minus(50, ChronoUnit.MINUTES), fim, duasSeriesDeSupino())))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+        return lerJson(resposta).get("id").asLong();
+    }
+
+    @Test
+    @DisplayName("A correção de uma sessão salva troca cargas e repetições das séries")
+    void deveCorrigirSeriesQuandoSessaoForEditada() throws Exception {
+        // given
+        String token = tokenNovoUsuario();
+        long treinoId = criarTreino(token);
+        long sessaoId = registrar(token, treinoId);
+        Instant fim = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        var corrigida = List.of(Map.of("exercicioId", SUPINO_RETO, "numero", 1, "cargaKg", 65, "repeticoes", 6));
+
+        // when
+        var resultado = mvc.perform(comCorpo(comToken(put("/api/sessoes/" + sessaoId), token),
+                sessao(treinoId, fim.minus(40, ChronoUnit.MINUTES), fim, corrigida)));
+
+        // then
+        resultado.andExpect(status().isOk())
+                .andExpect(jsonPath("$.series.length()").value(1))
+                .andExpect(jsonPath("$.series[0].cargaKg").value(65))
+                .andExpect(jsonPath("$.series[0].repeticoes").value(6));
+    }
+
+    @Test
+    @DisplayName("Um usuário não consegue editar nem excluir a sessão de outro usuário")
+    void deveResponder404QuandoSessaoForDeOutroUsuario() throws Exception {
+        // given
+        String dono = tokenNovoUsuario();
+        long treinoId = criarTreino(dono);
+        long sessaoId = registrar(dono, treinoId);
+        String outro = tokenNovoUsuario();
+        Instant fim = Instant.now();
+
+        // when
+        var edicao = mvc.perform(comCorpo(comToken(put("/api/sessoes/" + sessaoId), outro),
+                sessao(treinoId, fim.minus(40, ChronoUnit.MINUTES), fim, duasSeriesDeSupino())));
+        var exclusao = mvc.perform(comToken(delete("/api/sessoes/" + sessaoId), outro));
+
+        // then
+        edicao.andExpect(status().isNotFound());
+        exclusao.andExpect(status().isNotFound());
     }
 }

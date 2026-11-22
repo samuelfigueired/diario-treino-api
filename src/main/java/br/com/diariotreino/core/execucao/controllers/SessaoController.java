@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +48,12 @@ public class SessaoController {
     @ResponseStatus(HttpStatus.CREATED)
     public SessaoOutDTO registrar(@Valid @RequestBody SessaoInDTO dto) {
         return service.registrar(dto);
+    }
+
+    @Operation(summary = "Corrige horários, cargas e repetições de uma sessão salva")
+    @PutMapping("/{id}")
+    public SessaoOutDTO atualizar(@PathVariable Long id, @Valid @RequestBody SessaoInDTO dto) {
+        return service.atualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")

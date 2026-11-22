@@ -37,7 +37,7 @@ core/<modulo>/
 | `core/usuario` | (usado pelo auth) | `UsuarioMapper` (só saída), `UsuarioRepository` |
 | `core/exercicio` | `GET/POST /api/exercicios` | `ExercicioService` (RF03: catálogo + personalizados) |
 | `core/treino` | `GET/POST /api/treinos`, `GET/PUT/DELETE /api/treinos/{id}` | `TreinoService` (RF02/RF03, usa `CrudServicePadrao`) |
-| `core/execucao` | `GET/POST /api/sessoes`, `GET/DELETE /api/sessoes/{id}` | `SessaoService` (RF04/RF05) + `util/CalculoVolume` |
+| `core/execucao` | `GET/POST /api/sessoes`, `GET/PUT/DELETE /api/sessoes/{id}` | `SessaoService` (RF04/RF05) + `util/CalculoVolume` |
 | `core/saude` | `GET /api/saude` | (só controller) |
 
 Histórico (RF05) e evolução (RF06) são calculados no app a partir de `GET /api/sessoes`. Se o volume de dados crescer,

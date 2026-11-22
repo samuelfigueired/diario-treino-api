@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /** Exercício dentro de um treino, com a ordem e o planejado (séries × repetições). */
 @Entity
 @Table(name = "treino_exercicios")
@@ -39,4 +41,8 @@ public class TreinoExercicio {
 
     @Column(nullable = false)
     private Integer repeticoesPlanejadas;
+
+    /** Carga alvo definida pelo usuário (kg). Nula = sem alvo; o app usa a última carga registrada. */
+    @Column(precision = 7, scale = 2)
+    private BigDecimal cargaPlanejadaKg;
 }

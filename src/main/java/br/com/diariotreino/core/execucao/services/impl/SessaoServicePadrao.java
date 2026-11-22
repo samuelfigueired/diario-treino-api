@@ -75,6 +75,21 @@ public class SessaoServicePadrao implements SessaoService {
 
     @Override
     @Transactional
+    public SessaoOutDTO atualizar(Long id, SessaoInDTO dto) {
+        SessaoTreino sessao = buscarEntidade(id);
+        validarHorarios(dto.getInicio(), dto.getFim());
+        validarSeries(dto.getSeries(), sessao.getUsuarioId());
+        mapper.updateEntidade(dto, sessao);
+        sessao.getSeries().clear();
+        dto.getSeries().stream().map(mapper::toSerie).forEach(serie -> {
+            serie.setSessao(sessao);
+            sessao.getSeries().add(serie);
+        });
+        return mapper.toDto(repository.saveAndFlush(sessao));
+    }
+
+    @Override
+    @Transactional
     public void excluir(Long id) {
         repository.delete(buscarEntidade(id));
     }

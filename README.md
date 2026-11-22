@@ -13,8 +13,9 @@ mvn spring-boot:run
 
 - API: http://localhost:8080/api/saude
 - Documentação: http://localhost:8080/swagger-ui.html
-- Console do H2: http://localhost:8080/h2-console (JDBC URL `jdbc:h2:mem:diariotreino`, usuário `sa`)
-- Usuária de demonstração: `mariana.rocha@exemplo.com.br` / `treino2026` (treinos A–D e 12 semanas de histórico)
+- Banco de desenvolvimento: H2 em arquivo na pasta `dados/` (os dados ficam salvos entre reinícios; apague a pasta para zerar)
+- Console do H2: http://localhost:8080/h2-console (JDBC URL `jdbc:h2:file:./dados/diariotreino;AUTO_SERVER=TRUE`, usuário `sa`)
+- Dados fictícios para demonstração: `set APP_DEMO=true` antes de subir (usuária `mariana.rocha@exemplo.com.br` / `treino2026`)
 
 No Swagger, faça `POST /api/auth/login`, copie o `token` e cole em **Authorize** para testar as outras rotas.
 

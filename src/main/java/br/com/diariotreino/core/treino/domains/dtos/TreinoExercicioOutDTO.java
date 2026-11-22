@@ -24,6 +24,9 @@ public class TreinoExercicioOutDTO {
 
     private Integer repeticoesPlanejadas;
 
+    /** Carga alvo definida pelo usuário (kg). */
+    private BigDecimal cargaPlanejadaKg;
+
     /** Carga da última série registrada deste exercício (nula se nunca foi feito ou é peso corporal). */
     private BigDecimal ultimaCargaKg;
 }

@@ -2,7 +2,8 @@ spring:
   application:
     name: diario-treino-api
   datasource:
-    url: jdbc:h2:mem:diariotreino;DB_CLOSE_DELAY=-1
+    # Banco em arquivo (pasta dados/): os registros sobrevivem quando a API reinicia.
+    url: ${APP_DB_URL:jdbc:h2:file:./dados/diariotreino;AUTO_SERVER=TRUE}
     username: sa
     password:
   jpa:
@@ -27,5 +28,8 @@ app:
     # Em produção use APP_JWT_SECRET (perfil prod recusa este valor).
     secret: ${APP_JWT_SECRET:troque-este-segredo-em-producao-0123456789abcdef}
     expiracao-minutos: ${APP_JWT_EXPIRACAO_MINUTOS:10080}
+  demo:
+    # true cria a usuária de demonstração com treinos e histórico fictícios.
+    ativo: ${APP_DEMO:false}
   cors:
     origens: http://localhost:8081,http://localhost:19006

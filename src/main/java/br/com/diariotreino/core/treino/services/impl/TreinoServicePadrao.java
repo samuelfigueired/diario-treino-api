@@ -88,6 +88,7 @@ public class TreinoServicePadrao extends CrudServicePadrao<Treino, TreinoInDTO, 
             te.setOrdem(i + 1);
             te.setSeriesPlanejadas(item.getSeriesPlanejadas());
             te.setRepeticoesPlanejadas(item.getRepeticoesPlanejadas());
+            te.setCargaPlanejadaKg(item.getCargaPlanejadaKg());
             treino.getExercicios().add(te);
         }
     }

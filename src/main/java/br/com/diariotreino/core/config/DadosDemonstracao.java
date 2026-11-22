@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,11 +36,13 @@ import java.util.stream.Collectors;
 
 /**
  * Usuária de demonstração com treinos A–D e 12 semanas de histórico, para testar o app sem cadastrar nada.
- * Não roda no perfil prod. Login: mariana.rocha@exemplo.com.br / treino2026.
+ * Desligada por padrão (os dados do app são reais); liga com APP_DEMO=true. Nunca roda no perfil prod.
+ * Login: mariana.rocha@exemplo.com.br / treino2026.
  */
 @Slf4j
 @Component
 @Profile("!prod")
+@ConditionalOnProperty(name = "app.demo.ativo", havingValue = "true")
 @Order(2)
 @RequiredArgsConstructor
 public class DadosDemonstracao implements ApplicationRunner {

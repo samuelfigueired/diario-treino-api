@@ -1,8 +1,12 @@
 package br.com.diariotreino.core.treino.domains.dtos;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
+import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,4 +30,8 @@ public class TreinoExercicioInDTO {
     @Positive(message = "Informe as repetições.")
     @Max(value = 200, message = "Use no máximo 200 repetições.")
     private Integer repeticoesPlanejadas;
+
+    @PositiveOrZero(message = "A carga não pode ser negativa.")
+    @Digits(integer = 5, fraction = 2, message = "Use no máximo duas casas decimais na carga.")
+    private BigDecimal cargaPlanejadaKg;
 }

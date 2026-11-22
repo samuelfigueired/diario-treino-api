@@ -16,5 +16,8 @@ public interface SessaoService {
     /** RF04: grava o treino realizado com as séries, repetições e cargas. */
     SessaoOutDTO registrar(SessaoInDTO dto);
 
+    /** Corrige horários, cargas e repetições de uma sessão já salva (o treino de origem não muda). */
+    SessaoOutDTO atualizar(Long id, SessaoInDTO dto);
+
     void excluir(Long id);
 }

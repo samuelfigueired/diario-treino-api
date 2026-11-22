@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 /** Base dos testes pela API: login da usuária de demonstração e criação de usuários novos (e-mails únicos). */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public abstract class ApiTestBase {
 
     @Autowired
