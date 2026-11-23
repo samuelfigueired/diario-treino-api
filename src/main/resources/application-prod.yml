@@ -20,4 +20,5 @@ app:
   jwt:
     secret: ${APP_JWT_SECRET}
   cors:
-    origens: ${APP_CORS_ORIGENS:http://localhost:8081}
+    # Versão web do app no Expo Hosting (*.expo.app) e o servidor de desenvolvimento do Expo.
+    origens: ${APP_CORS_ORIGENS:https://*.expo.app,http://localhost:8081}

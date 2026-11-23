@@ -68,7 +68,8 @@ public class SecurityConfig {
 
     private CorsConfigurationSource corsConfigurationSource() {
         var config = new CorsConfiguration();
-        config.setAllowedOrigins(origensPermitidas);
+        // Padrões permitem curingas, ex.: https://*.expo.app (versão web publicada no Expo Hosting)
+        config.setAllowedOriginPatterns(origensPermitidas);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         var source = new UrlBasedCorsConfigurationSource();
